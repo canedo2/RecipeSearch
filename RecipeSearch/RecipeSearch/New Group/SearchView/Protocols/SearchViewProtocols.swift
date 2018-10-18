@@ -2,10 +2,10 @@ import Foundation
 
 protocol SearchControllerProtocol {
     var searchPresenter: SearchPresenterProtocol? { get set }
-    func insert(repositories: [Recipe]?)
+    func insert(recipes: [Recipe]?, reload: Bool)
 }
 
 protocol SearchPresenterProtocol {
     var searchController: SearchControllerProtocol { get set }
-    func performSearch(string: String?)
+    func performSearch(string: String?, page: Int)
 }

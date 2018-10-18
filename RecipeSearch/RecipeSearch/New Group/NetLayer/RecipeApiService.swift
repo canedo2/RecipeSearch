@@ -4,16 +4,16 @@ import Alamofire
 class RecipeApiService: APIServiceProtocol {
     
     let baseUrlString = "http://www.recipepuppy.com/api/?q="
-    let optionsString = "&p=1"
+    let optionsString = "&p="
     
     weak var delegate: APIServiceDelegate?
     
-    func request(searchString: String?) {
+    func request(searchString: String?, page: Int) {
         guard let searchString = searchString, searchString != "" else {
             return
         }
         
-        let url = "\(baseUrlString)\(searchString)\(optionsString)"
+        let url = "\(baseUrlString)\(searchString)\(optionsString)\(page)"
         
         Alamofire.request(url).responseJSON { response in
             if let status = response.response?.statusCode {
@@ -24,7 +24,7 @@ class RecipeApiService: APIServiceProtocol {
                         var itemsArray = [NetRecipe]()
                         for item in items {
                             guard let item = item as? [String:Any] else {
-                                self.delegate?.process(result: nil)
+                                self.delegate?.process(result: nil, reload: page == 1)
                                 return
                             }
                             if let netRecipe = NetRecipe(dictionary: item) {
@@ -32,13 +32,12 @@ class RecipeApiService: APIServiceProtocol {
                             }
                         }
                         if itemsArray.count > 0 {
-                            
-                            self.delegate?.process(result: itemsArray)
-                        } else { self.delegate?.process(result: nil)}
+                            self.delegate?.process(result: itemsArray, reload: page == 1)
+                        } else { self.delegate?.process(result: nil, reload: page == 1)}
                     }
                 } else {
                     print("Resquest unsuccessful: \(status)")
-                    self.delegate?.process(result: nil)
+                    self.delegate?.process(result: nil, reload: page == 1)
                 }
             }
         }

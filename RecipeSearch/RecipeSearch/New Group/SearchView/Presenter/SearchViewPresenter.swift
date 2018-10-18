@@ -14,14 +14,14 @@ class SearchViewPresenter: SearchPresenterProtocol, APIServiceDelegate {
         self.apiService.delegate = self
     }
 
-    func performSearch(string: String?) {
-        self.apiService.request(searchString: string)
+    func performSearch(string: String?, page: Int) {
+        self.apiService.request(searchString: string, page: page)
     }
     
-    func process(result: [NetRecipe]?) {
+    func process(result: [NetRecipe]?, reload: Bool) {
         let processedRecipes = self.transformer.transform(from: result)
         DispatchQueue.main.async {
-            self.searchController.insert(repositories: processedRecipes)
+            self.searchController.insert(recipes: processedRecipes, reload: reload)
         }
     }
 }

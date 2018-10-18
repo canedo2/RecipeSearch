@@ -29,6 +29,11 @@ extension SearchViewController: UITableViewDataSource {
         
         let item = tableItems![indexPath.row]
         cell.configure(title: item.title, overview: item.ingredients, imageURL: item.img_url)
+        
+        if indexPath.row == (tableItems?.count ?? 0) - 3 {
+            self.loadMoreItems()
+        }
+        
         return cell
         
     }

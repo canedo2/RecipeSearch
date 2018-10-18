@@ -7,6 +7,7 @@ class SearchViewController: UIViewController, SearchControllerProtocol {
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     var tableItems: [Recipe]?
+    var searchString: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,6 @@ class SearchViewController: UIViewController, SearchControllerProtocol {
         self.navigationItem.searchController?.searchBar.delegate = self
         self.navigationItem.hidesSearchBarWhenScrolling = false;
         
-        self.searchPresenter?.performSearch(string: "swift")
         configureTableView()
     }
     
@@ -38,9 +38,31 @@ class SearchViewController: UIViewController, SearchControllerProtocol {
         }
     }
     
-    func insert(repositories: [Recipe]?) {
-        tableItems = repositories
-        showInfoIfNeeded()
-        tableView.reloadData()
+    func loadMoreItems() {
+        self.searchPresenter?.performSearch(string: searchString,
+                                                        page: (self.tableItems?.count ?? 0)/10 + 1)
+
+    }
+    
+    func insert(recipes: [Recipe]?, reload: Bool) {
+        
+        if (reload) {
+            tableItems = recipes
+            showInfoIfNeeded()
+            tableView.reloadData()
+        } else {
+            
+            if let recipes = recipes {
+                var indexPaths = [IndexPath]()
+                for recipe in recipes {
+                    tableItems?.append(recipe)
+                    if tableItems != nil {
+                        indexPaths.append(IndexPath(row: tableItems!.count - 1, section: 0))
+                    }
+                }
+                tableView.insertRows(at: indexPaths, with: .fade)
+            }
+            
+        }
     }
 }
