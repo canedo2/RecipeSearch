@@ -1,0 +1,11 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '11.0'
+use_frameworks!
+
+target ‘RecipeSearch’ do
+
+pod 'SwiftDate'
+pod 'SDWebImage'
+pod 'Alamofire'
+
+end
